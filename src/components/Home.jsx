@@ -16,7 +16,6 @@ const Home = () => {
       // Debug log
       const { data } = await axios.get(`/products/category/${category}`);
       setFilterProducts(data);
-      console.log(data);
     } catch (error) {
       console.log("Error", error);
     }

@@ -1,3 +1,4 @@
+import { nanoid } from "nanoid";
 import React, { useContext, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { ProductContext } from "../utils/Context";
@@ -11,11 +12,11 @@ const Create = () => {
   const [price, setPrice] = useState("");
   const [description, setDescription] = useState("");
 
-  const getHighestId = (products) => {
-    if (products.length === 0) return 0;
-    const ids = products.map((product) => parseInt(product.id, 10)).filter((id) => !isNaN(id));
-    return Math.max(...ids);
-  };
+  // const getHighestId = (products) => {
+  //   if (products.length === 0) return 0;
+  //   const ids = products.map((product) => parseInt(product.id, 10)).filter((id) => !isNaN(id));
+  //   return Math.max(...ids);
+  // };
 
   const AddProductHandler = (e) => {
     e.preventDefault();
@@ -31,11 +32,11 @@ const Create = () => {
       return;
     }
 
-    const storedProducts = JSON.parse(localStorage.getItem("products")) || [];
-    const nextId = getHighestId(storedProducts) + 1;
+    // const storedProducts = JSON.parse(localStorage.getItem("products")) || [];
+    // const nextId = getHighestId(storedProducts) + 1;
 
     const product = {
-      id: nextId.toString(),
+      id: nanoid(),
       title,
       image,
       category,
@@ -43,12 +44,14 @@ const Create = () => {
       description,
     };
 
-    const updatedProducts = [...storedProducts, product];
-    setProducts(updatedProducts);
-    localStorage.setItem("products", JSON.stringify(updatedProducts));
+    setProducts([...products, product]);
+    localStorage.setItem("products", JSON.stringify([...products, product]));
     navigate("/");
-  };
 
+    // const updatedProducts = [...storedProducts, product];
+    // setProducts(updatedProducts);
+    // localStorage.setItem("products", JSON.stringify(updatedProducts));
+  };
 
   return (
     <div>
@@ -103,19 +106,6 @@ const Create = () => {
           </div>
         </button>
       </form>
-      <div className="product-list mt-8">
-        {products.map((product) => (
-          <div key={product.id} className="product-item flex justify-between items-center mb-4">
-            <h2>{product.title}</h2>
-            <button
-              className="bg-red-500 text-white px-3 py-1 rounded"
-              onClick={() => deleteProductHandler(product.id)}
-            >
-              Delete
-            </button>
-          </div>
-        ))}
-      </div>
     </div>
   );
 };

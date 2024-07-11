@@ -14,20 +14,14 @@ const Edit = () => {
     description: "",
   });
 
-  useEffect(() => {
-    const foundProduct = products.find((p) => p.id === id);
-    if (foundProduct) {
-      setProduct(foundProduct);
-    }
-  }, [id, products]);
-
-  console.log(product);
-
-  console.log(products);
-
   const ChangeHandler = (e) => {
     setProduct({ ...product, [e.target.name]: e.target.value });
   };
+
+  useEffect(() => {
+    setProduct(products.filter((p) => p.id == id)[0]);
+  }, [id]);
+  // console.log(product);
 
   const AddProductHandler = (e) => {
     e.preventDefault();
@@ -43,10 +37,13 @@ const Edit = () => {
       return;
     }
 
-    const updatedProducts = products.map((p) => (p.id === id ? product : p));
-    setProducts(updatedProducts);
-    localStorage.setItem("products", JSON.stringify(updatedProducts));
-    navigate("/");
+    const pi = products.findIndex((p) => p.id == id);
+    const copyData = [...products];
+    copyData[pi] = { ...products[pi], ...product };
+
+    setProducts(copyData);
+    localStorage.setItem("products", JSON.stringify(copyData));
+    navigate(-1);
   };
 
   return (
@@ -62,7 +59,7 @@ const Edit = () => {
           className="text-lg p-1 bg-zinc-100 w-full outline-none border-none rounded-lg"
           name="image"
           onChange={ChangeHandler}
-          value={product.image || ""}
+          value={product && product.image}
         />
         <input
           type="text"
@@ -70,7 +67,7 @@ const Edit = () => {
           className="text-lg bg-zinc-100 p-1 w-full outline-none border-none rounded-lg"
           name="title"
           onChange={ChangeHandler}
-          value={product.title || ""}
+          value={product && product.title}
         />
         <div className="flex justify-between w-full">
           <input
@@ -79,7 +76,7 @@ const Edit = () => {
             className="text-lg bg-zinc-100 p-1 w-[49%] outline-none border-none rounded-lg"
             name="category"
             onChange={ChangeHandler}
-            value={product.category || ""}
+            value={product && product.category}
           />
           <input
             type="number"
@@ -87,12 +84,12 @@ const Edit = () => {
             className="text-lg bg-zinc-100 p-1 w-[49%] outline-none border-none rounded-lg"
             name="price"
             onChange={ChangeHandler}
-            value={product.price || ""}
+            value={product && product.price}
           />
         </div>
         <textarea
           rows="7"
-          value={product.description || ""}
+          value={product && product.description}
           placeholder="enter product description here..."
           className="text-lg bg-zinc-100 p-3 w-full rounded-lg outline-none border-none"
           name="description"

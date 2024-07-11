@@ -5,7 +5,7 @@ import Loading from "./templates/Loading";
 
 const Details = () => {
   const navigate = useNavigate();
-  const [products] = useContext(ProductContext);
+  const [products, setProducts] = useContext(ProductContext);
   const [product, setProduct] = useState(null);
   const { id } = useParams();
 
@@ -13,15 +13,13 @@ const Details = () => {
     if (!product) {
       setProduct(products.filter((p) => p.id == id)[0]);
     }
-  }, [[product, id, products]]);
+  }, []);
 
   const ProductDeleteHandler = (id) => {
     const filterProducts = products.filter((p) => p.id !== id);
-    setProduct(filterProducts);
-    console.log(filterProducts);
+    setProducts(filterProducts);
     localStorage.setItem("products", JSON.stringify(filterProducts));
     navigate("/");
-    window.location.reload();
   };
 
   // const getSingleProduct = async () => {
